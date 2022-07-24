@@ -18,6 +18,12 @@ public class ClienteBuilder {
 		return builder;		
 	}
 	
+	public ClienteBuilder reputacao(Reputacao reputacao) {
+		cliente.setReputacao(reputacao);
+		
+		return this;
+	}
+	
 	public Cliente build() {
 		return cliente;
 	}

@@ -8,18 +8,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import br.com.treinaweb.twbiblioteca.enums.Reputacao;
-import br.com.treinaweb.twbiblioteca.enums.Tipo;
-import br.com.treinaweb.twbiblioteca.models.Autor;
-import br.com.treinaweb.twbiblioteca.models.Cliente;
 import br.com.treinaweb.twbiblioteca.models.Obra;
 import br.com.treinaweb.twbiblioteca.services.EmprestimoService;
+import br.com.treinaweb.twbiclioteca.builders.ClienteBuilder;
+import br.com.treinaweb.twbiclioteca.builders.ObraBuilder;
 
 public class EmprestimoServiceTest {
 	
@@ -50,10 +46,10 @@ public class EmprestimoServiceTest {
 	void quandoMetodoNovoChamadoDeveRetornarUmEmprestimo() {
 		//cenario
 		//var service = new EmprestimoService();
-		var cliente = new Cliente(1L, "Cliente Teste", LocalDate.now(), "123.456.789-11", Reputacao.REGULAR);
-		var autor = new Autor(1L,  "Autor Teste", LocalDate.now(), null);
-		var obra = new Obra(1L, "Obra teste", 100, Tipo.LIVRO, autor);
-		
+		var cliente = ClienteBuilder.builder().build();
+		//var autor = AutorBuilder.builder().build();
+		var obra = ObraBuilder.builder().build();
+				
 		//execucao
 		var emprestimo = service.novo(cliente, List.of(obra));
 		
@@ -70,9 +66,10 @@ public class EmprestimoServiceTest {
 	void quandoMetodoNovoChamadoComClienteReputacaoRuimDeveRetornarEmprestimoComDevolucaoDeUmDia() {
 		//cenario
 		//var service = new EmprestimoService();
-		var cliente = new Cliente(1L, "Cliente Teste", LocalDate.now(), "123.456.789-11", Reputacao.RUIM);
-		var autor = new Autor(1L,  "Autor Teste", LocalDate.now(), null);
-		var obra = new Obra(1L, "Obra teste", 100, Tipo.LIVRO, autor);
+		//var cliente = new Cliente(1L, "Cliente Teste", LocalDate.now(), "123.456.789-11", Reputacao.RUIM);
+		var cliente  = ClienteBuilder.builder().reputacao(Reputacao.RUIM).build();
+		//var autor = new Autor(1L,  "Autor Teste", LocalDate.now(), null);
+		var obra = ObraBuilder.builder().build();
 		
 		//execucao
 		var emprestimo = service.novo(cliente, List.of(obra));
@@ -85,9 +82,9 @@ public class EmprestimoServiceTest {
 	void quandoMetodoNovoChamadoComClienteReputacaoRegularDeveRetornarEmprestimoComDevolucaoDeTresDia() {
 		//cenario
 		//var service = new EmprestimoService();
-		var cliente = new Cliente(1L, "Cliente Teste", LocalDate.now(), "123.456.789-11", Reputacao.REGULAR);
-		var autor = new Autor(1L,  "Autor Teste", LocalDate.now(), null);
-		var obra = new Obra(1L, "Obra teste", 100, Tipo.LIVRO, autor);
+		var cliente = ClienteBuilder.builder().build();
+		//var autor = new Autor(1L,  "Autor Teste", LocalDate.now(), null);
+		var obra = ObraBuilder.builder().build();
 		
 		//execucao
 		var emprestimo = service.novo(cliente, List.of(obra));
@@ -100,9 +97,9 @@ public class EmprestimoServiceTest {
 	void quandoMetodoNovoChamadoComClienteReputacaoBoaDeveRetornarEmprestimoComDevolucaoDeCincoDia() {
 		//cenario
 		//var service = new EmprestimoService();
-		var cliente = new Cliente(1L, "Cliente Teste", LocalDate.now(), "123.456.789-11", Reputacao.BOA);
-		var autor = new Autor(1L,  "Autor Teste", LocalDate.now(), null);
-		var obra = new Obra(1L, "Obra teste", 100, Tipo.LIVRO, autor);
+		var cliente = ClienteBuilder.builder().reputacao(Reputacao.BOA).build();
+		//var autor = new Autor(1L,  "Autor Teste", LocalDate.now(), null);
+		var obra = ObraBuilder.builder().build();
 		
 		//execucao
 		var emprestimo = service.novo(cliente, List.of(obra));
@@ -116,7 +113,7 @@ public class EmprestimoServiceTest {
 
 		//cenario
 		//var service = new EmprestimoService();
-		var cliente = new Cliente(1L, "Cliente Teste", LocalDate.now(), "123.456.789-11", Reputacao.BOA);
+		var cliente = ClienteBuilder.builder().reputacao(Reputacao.BOA).build();
 		var mensagemEsperada = "Obra não pode ser nulo e nem vazio";
 		
 		//execucao
@@ -131,7 +128,7 @@ public class EmprestimoServiceTest {
 
 		//cenario
 		//var service = new EmprestimoService();
-		var cliente = new Cliente(1L, "Cliente Teste", LocalDate.now(), "123.456.789-11", Reputacao.BOA);
+		var cliente = ClienteBuilder.builder().build();
 		var obras = new ArrayList<Obra>();
 		var mensagemEsperada = "Obra não pode ser nulo e nem vazio";
 		
@@ -147,8 +144,8 @@ public class EmprestimoServiceTest {
 
 		//cenario
 		//var service = new EmprestimoService();
-		var autor = new Autor(1L,  "Autor Teste", LocalDate.now(), null);
-		var obra = new Obra(1L, "Obra teste", 100, Tipo.LIVRO, autor);
+		//var autor = new Autor(1L,  "Autor Teste", LocalDate.now(), null);
+		var obra = ObraBuilder.builder().build();
 		var mensagemEsperada = "Cliente não pode ser nulo";
 		
 		//execucao
