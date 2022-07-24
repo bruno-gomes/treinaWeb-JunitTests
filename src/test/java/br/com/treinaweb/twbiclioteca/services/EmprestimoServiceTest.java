@@ -3,13 +3,12 @@ package br.com.treinaweb.twbiclioteca.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mockitoSession;
+import static org.mockito.Mockito.times;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import br.com.treinaweb.twbiblioteca.enums.Reputacao;
 import br.com.treinaweb.twbiblioteca.models.Obra;
 import br.com.treinaweb.twbiblioteca.services.EmprestimoService;
+import br.com.treinaweb.twbiblioteca.services.NotificacaoService;
 import br.com.treinaweb.twbiclioteca.builders.ClienteBuilder;
 import br.com.treinaweb.twbiclioteca.builders.EmprestimoBuilder;
 import br.com.treinaweb.twbiclioteca.builders.ObraBuilder;
@@ -33,6 +33,9 @@ public class EmprestimoServiceTest {
 	
 	@InjectMocks
 	private EmprestimoService service;
+	
+	@Mock
+	private NotificacaoService notificacaoService;
 	
 //	@BeforeEach
 //	private void setup() {
@@ -180,10 +183,10 @@ public class EmprestimoServiceTest {
 		Mockito.when(emprestimoDAO.buscarTodos()).thenReturn(emprestimos);
 		
 		//execucao
-		var notificacoes = service.notificarAtrasos();
+		service.notificarAtrasos();
 		
 		//verificacao
-		assertEquals(2 , notificacoes);
+		Mockito.verify(notificacaoService, times(2)).notificar(emprestimos.get(1));
 	}
 
 

@@ -46,18 +46,16 @@ public class EmprestimoService {
 		return emprestimo;
 	}
 	
-	public int notificarAtrasos() {
-		var notificacoes = 0;
+	public void notificarAtrasos() {
 		var hoje = LocalDate.now();
 		var emprestimos =  emprestimoDAO.buscarTodos();
 		
 		for (Emprestimo emprestimo : emprestimos) {
 			var estaAtrasado = emprestimo.getDataDevolucao().isBefore(hoje);
 			if(estaAtrasado) {
-				notificacoes++;
+				notificacaoService.notificar(emprestimo);
 			}
 		}
 		
-		return notificacoes;
 	}
 }
