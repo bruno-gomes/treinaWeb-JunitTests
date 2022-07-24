@@ -3,6 +3,7 @@ package br.com.treinaweb.twbiclioteca.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mockitoSession;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,22 +11,34 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import br.com.treinaweb.twbiblioteca.enums.Reputacao;
 import br.com.treinaweb.twbiblioteca.models.Obra;
 import br.com.treinaweb.twbiblioteca.services.EmprestimoService;
 import br.com.treinaweb.twbiclioteca.builders.ClienteBuilder;
+import br.com.treinaweb.twbiclioteca.builders.EmprestimoBuilder;
 import br.com.treinaweb.twbiclioteca.builders.ObraBuilder;
+import br.com.treinaweb.twbiclioteca.dao.EmprestimoDAO;
 
+@ExtendWith(MockitoExtension.class)
 public class EmprestimoServiceTest {
 	
-	private EmprestimoService service =  null;
+	@Mock
+	private EmprestimoDAO emprestimoDAO;
 	
-	@BeforeEach
-	private void setup() {
-		//System.out.println("Antes do metodo");
-		service = new EmprestimoService();
-	}
+	@InjectMocks
+	private EmprestimoService service;
+	
+//	@BeforeEach
+//	private void setup() {
+//		//System.out.println("Antes do metodo");
+//		service = new EmprestimoService(emprestimoDAO);
+//	}
 	
 //	@AfterEach
 //	private void depoisDeCadaMetodo() {
@@ -153,6 +166,24 @@ public class EmprestimoServiceTest {
 		var exception = assertThrows(IllegalArgumentException.class, () ->  service.novo(null, List.of(obra)));
 		assertEquals(mensagemEsperada, exception.getMessage());
 
+	}
+	
+	@Test
+	void quandoMetodoNotificarAtrasoForChamadoDeveRetornarNumeroNotificacoes() {
+		//cenario
+		var emprestimos = List.of(
+				EmprestimoBuilder.builder().build(),
+				EmprestimoBuilder.builder().dataDevolucao(LocalDate.now().minusDays(1)).build(),
+				EmprestimoBuilder.builder().dataDevolucao(LocalDate.now().minusDays(1)).build()
+				);
+		
+		Mockito.when(emprestimoDAO.buscarTodos()).thenReturn(emprestimos);
+		
+		//execucao
+		var notificacoes = service.notificarAtrasos();
+		
+		//verificacao
+		assertEquals(2 , notificacoes);
 	}
 
 

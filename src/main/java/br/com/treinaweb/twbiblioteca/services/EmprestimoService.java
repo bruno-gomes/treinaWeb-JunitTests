@@ -7,8 +7,18 @@ import java.util.List;
 import br.com.treinaweb.twbiblioteca.models.Cliente;
 import br.com.treinaweb.twbiblioteca.models.Emprestimo;
 import br.com.treinaweb.twbiblioteca.models.Obra;
+import br.com.treinaweb.twbiclioteca.dao.EmprestimoDAO;
 
 public class EmprestimoService {
+	
+	private EmprestimoDAO emprestimoDAO;
+	
+	private NotificacaoService notificacaoService;
+	
+	public EmprestimoService(EmprestimoDAO emprestimoDAO, NotificacaoService notificacaoService) {
+		this.emprestimoDAO = emprestimoDAO;
+		this.notificacaoService = notificacaoService;
+	}
 	
 	public Emprestimo novo(Cliente cliente, List<Obra> obras) {
 		if(cliente == null) {
@@ -34,5 +44,20 @@ public class EmprestimoService {
 		emprestimo.setDataDevolucao(dataDevolucao);
 		
 		return emprestimo;
+	}
+	
+	public int notificarAtrasos() {
+		var notificacoes = 0;
+		var hoje = LocalDate.now();
+		var emprestimos =  emprestimoDAO.buscarTodos();
+		
+		for (Emprestimo emprestimo : emprestimos) {
+			var estaAtrasado = emprestimo.getDataDevolucao().isBefore(hoje);
+			if(estaAtrasado) {
+				notificacoes++;
+			}
+		}
+		
+		return notificacoes;
 	}
 }
